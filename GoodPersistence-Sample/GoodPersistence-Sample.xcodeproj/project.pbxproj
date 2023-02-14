@@ -7,12 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5D4A95AA299C15E000DFAEAE /* GoodPersistence in Frameworks */ = {isa = PBXBuildFile; productRef = 5D4A95A9299C15E000DFAEAE /* GoodPersistence */; };
 		EA751BB429968D87004016E1 /* MultiLineLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA751BB329968D87004016E1 /* MultiLineLabel.swift */; };
 		EA751BBD29969A9C004016E1 /* UINavigationBarExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA751BBC29969A9C004016E1 /* UINavigationBarExtensions.swift */; };
 		EACEC45E2995B363008242AA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACEC45D2995B363008242AA /* AppDelegate.swift */; };
 		EACEC4692995B365008242AA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EACEC4682995B365008242AA /* Assets.xcassets */; };
 		EACEC46C2995B365008242AA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EACEC46A2995B365008242AA /* LaunchScreen.storyboard */; };
-		EACEC4762995B3BC008242AA /* GoodPersistence in Frameworks */ = {isa = PBXBuildFile; productRef = EACEC4752995B3BC008242AA /* GoodPersistence */; };
 		EACEC47A2995B425008242AA /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACEC4792995B425008242AA /* Coordinator.swift */; };
 		EACEC47C2995B441008242AA /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACEC47B2995B441008242AA /* AppCoordinator.swift */; };
 		EACEC47E2995B459008242AA /* HomeCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACEC47D2995B459008242AA /* HomeCoordinator.swift */; };
@@ -35,6 +35,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5D4A95A8299C15C900DFAEAE /* GoodPersistence */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = GoodPersistence; path = ..; sourceTree = "<group>"; };
 		EA751BB329968D87004016E1 /* MultiLineLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiLineLabel.swift; sourceTree = "<group>"; };
 		EA751BBC29969A9C004016E1 /* UINavigationBarExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UINavigationBarExtensions.swift; sourceTree = "<group>"; };
 		EACEC45A2995B363008242AA /* GoodPersistence-Sample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "GoodPersistence-Sample.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -42,7 +43,6 @@
 		EACEC4682995B365008242AA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EACEC46B2995B365008242AA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		EACEC46D2995B365008242AA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		EACEC4732995B3A9008242AA /* .. */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ..; sourceTree = "<group>"; };
 		EACEC4792995B425008242AA /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
 		EACEC47B2995B441008242AA /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
 		EACEC47D2995B459008242AA /* HomeCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCoordinator.swift; sourceTree = "<group>"; };
@@ -69,7 +69,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EACEC4762995B3BC008242AA /* GoodPersistence in Frameworks */,
+				5D4A95AA299C15E000DFAEAE /* GoodPersistence in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -87,7 +87,7 @@
 		EACEC4512995B363008242AA = {
 			isa = PBXGroup;
 			children = (
-				EACEC4732995B3A9008242AA /* .. */,
+				5D4A95A8299C15C900DFAEAE /* GoodPersistence */,
 				EACEC45C2995B363008242AA /* GoodPersistence-Sample */,
 				EACEC4A52995CCB3008242AA /* Resources */,
 				EACEC45B2995B363008242AA /* Products */,
@@ -270,7 +270,7 @@
 			);
 			name = "GoodPersistence-Sample";
 			packageProductDependencies = (
-				EACEC4752995B3BC008242AA /* GoodPersistence */,
+				5D4A95A9299C15E000DFAEAE /* GoodPersistence */,
 			);
 			productName = "GoodPersistence-Sample";
 			productReference = EACEC45A2995B363008242AA /* GoodPersistence-Sample.app */;
@@ -559,7 +559,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		EACEC4752995B3BC008242AA /* GoodPersistence */ = {
+		5D4A95A9299C15E000DFAEAE /* GoodPersistence */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = GoodPersistence;
 		};
