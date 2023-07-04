@@ -1,3 +1,5 @@
+![Logo](good-persistence.png)
+
 # GoodPersistence
 
 [![iOS Version](https://img.shields.io/badge/iOS_Version->=_12.0-brightgreen?logo=apple&logoColor=green)]()
