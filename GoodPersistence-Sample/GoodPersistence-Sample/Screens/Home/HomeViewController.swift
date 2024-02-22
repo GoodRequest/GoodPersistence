@@ -20,7 +20,18 @@ final class HomeViewController: BaseViewController<HomeViewModel>  {
         return counterValueLabel
     }()
 
-    private let savedValueLabel: MultiLineLabel = {
+    private let savedUserDefaultsValueLabel: MultiLineLabel = {
+        let counterValueLabel = MultiLineLabel.create(
+            font: .systemFont(ofSize: 32, weight: .heavy),
+            alignment: .center
+        )
+        counterValueLabel.translatesAutoresizingMaskIntoConstraints = false
+        counterValueLabel.isHidden = true
+
+        return counterValueLabel
+    }()
+    
+    private let savedKeychainValueLabel: MultiLineLabel = {
         let counterValueLabel = MultiLineLabel.create(
             font: .systemFont(ofSize: 32, weight: .heavy),
             alignment: .center
@@ -31,9 +42,17 @@ final class HomeViewController: BaseViewController<HomeViewModel>  {
         return counterValueLabel
     }()
 
-    private let saveButton: ActionButton = {
+    private let saveButtonUserDefaults: ActionButton = {
         let button = ActionButton()
-        button.setTitle(Constants.Texts.Home.save, for: .normal)
+        button.setTitle(Constants.Texts.Home.saveToUserDefaults, for: .normal)
+        button.updateActivityIndicatorColor(color: .black)
+
+        return button
+    }()
+    
+    private let saveButtonKeychain: ActionButton = {
+        let button = ActionButton()
+        button.setTitle(Constants.Texts.Home.saveToKeychain, for: .normal)
         button.updateActivityIndicatorColor(color: .black)
 
         return button
@@ -51,6 +70,15 @@ final class HomeViewController: BaseViewController<HomeViewModel>  {
         button.setTitle(Constants.Texts.Home.aboutApp, for: .normal)
 
         return button
+    }()
+    
+    private let topStackView: UIStackView = {
+        let topStackView = UIStackView()
+        topStackView.translatesAutoresizingMaskIntoConstraints = false
+        topStackView.axis = .vertical
+        topStackView.spacing = 16
+
+        return topStackView
     }()
 
     private let bottomStackView: UIStackView = {
@@ -89,10 +117,10 @@ extension HomeViewController {
         navigationController?.navigationBar.prefersLargeTitles = true
         title = Constants.Texts.Home.title
 
-        [saveButton, resetButton, aboutAppButton].forEach { bottomStackView.addArrangedSubview($0) }
-        [bottomStackView, counterValueLabel].forEach {view.addSubview($0) }
+        [savedUserDefaultsValueLabel, savedKeychainValueLabel].forEach { topStackView.addArrangedSubview($0) }
+        [saveButtonUserDefaults, saveButtonKeychain, resetButton, aboutAppButton].forEach { bottomStackView.addArrangedSubview($0) }
+        [topStackView, bottomStackView, counterValueLabel].forEach {view.addSubview($0) }
 
-        view.addSubview(savedValueLabel)
         setupConstraints()
     }
 
@@ -101,9 +129,10 @@ extension HomeViewController {
             counterValueLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             counterValueLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
 
-            savedValueLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            savedValueLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-
+            topStackView.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -32),
+            topStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: -16),
+            topStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            
             bottomStackView.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -32),
             bottomStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
             bottomStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor)
@@ -124,18 +153,30 @@ extension HomeViewController {
             .assign(to: \.text, on: counterValueLabel, ownership: .weak)
             .store(in: &cancellables)
 
-        reactor.savedValuePublisher
+        reactor.savedUserDefaultsValuePublisher
             .removeDuplicates()
-            .sink { [weak self] in self?.handle(savedValue: $0) }
+            .sink { [weak self] in self?.handle(savedUserDefaultsValue: $0) }
+            .store(in: &cancellables)
+        
+        reactor.savedKeychainValuePublisher
+            .removeDuplicates()
+            .sink { [weak self] in self?.handle(savedKeychainValue: $0) }
             .store(in: &cancellables)
     }
 
     func bindActions(reactor: HomeViewModel) {
-        saveButton.publisher(for: .touchUpInside)
+        saveButtonUserDefaults.publisher(for: .touchUpInside)
             .sink { [unowned self] in
                 guard let timerValue = self.counterValueLabel.text else { return }
 
-                reactor.saveToCache(value: timerValue) }
+                reactor.saveToUserDefaults(value: timerValue) }
+            .store(in: &cancellables)
+        
+        saveButtonKeychain.publisher(for: .touchUpInside)
+            .sink { [unowned self] in
+                guard let timerValue = self.counterValueLabel.text else { return }
+
+                reactor.saveToKeychain(value: timerValue) }
             .store(in: &cancellables)
 
         resetButton.publisher(for: .touchUpInside)
@@ -154,9 +195,14 @@ extension HomeViewController {
 
 extension HomeViewController {
 
-    func handle(savedValue: String) {
-        savedValueLabel.isHidden = savedValue.isEmpty
-        savedValueLabel.text =  [Constants.Texts.Home.savedTime, savedValue].joined()
+    func handle(savedUserDefaultsValue: String) {
+        savedUserDefaultsValueLabel.isHidden = savedUserDefaultsValue.isEmpty
+        savedUserDefaultsValueLabel.text =  [Constants.Texts.Home.userDefaultsTime, savedUserDefaultsValue].joined()
+    }
+    
+    func handle(savedKeychainValue: String) {
+        savedKeychainValueLabel.isHidden = savedKeychainValue.isEmpty
+        savedKeychainValueLabel.text =  [Constants.Texts.Home.keychainTime, savedKeychainValue].joined()
     }
 
 }

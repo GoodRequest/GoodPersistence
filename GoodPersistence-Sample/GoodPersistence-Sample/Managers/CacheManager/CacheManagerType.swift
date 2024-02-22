@@ -6,14 +6,22 @@
 //
 
 import Combine
+import GoodPersistence
 
 protocol CacheManagerType: AnyObject {
 
-    var savedTime: String { get }
+    var savedTimeUserDefaults: String { get }
 
-    var savedTimePublisher: AnyPublisher<String, Never> { get }
+    var savedTimeUserDefaultsPublisher: AnyPublisher<String, Never> { get }
+    
+    var savedTimeKeychain: String { get }
 
-    func save(value: String)
+    var savedTimeKeychainPublisher: AnyPublisher<String, KeychainError> { get }
+
+    var savedNumberKeychain: Int { get set }
+    
+    func saveToUserDefaults(value: String)
+    func saveToKeychain(value: String)
     func resetToDefault()
     
 }

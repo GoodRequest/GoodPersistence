@@ -10,20 +10,40 @@ import GoodPersistence
 
 final class CacheManager: CacheManagerType {
 
-    @UserDefaultValue("savedTime", defaultValue: "")
-    var savedTime: String
+    @UserDefaultValue("savedTimeUserDefaults", defaultValue: "")
+    var savedTimeUserDefaults: String
 
-    lazy var savedTimePublisher = _savedTime.publisher
+    lazy var savedTimeUserDefaultsPublisher = _savedTimeUserDefaults.publisher
         .dropFirst()
         .removeDuplicates()
         .eraseToAnyPublisher()
 
+    @KeychainValue(
+        "savedTimeKeychain",
+        defaultValue: "",
+        accessibility: .whenPasscodeSetThisDeviceOnly,
+        authenticationPolicy: [.biometryAny]
+    )
+    var savedTimeKeychain: String
 
-    func save(value: String) {
-        savedTime = value
+    lazy var savedTimeKeychainPublisher = _savedTimeKeychain.valuePublisher
+        .removeDuplicates()
+        .eraseToAnyPublisher()
+    
+    @KeychainValue("savedNumberKeychain", defaultValue: 0)
+    var savedNumberKeychain: Int
+    lazy var savedNumber = $savedNumberKeychain
+    
+    func saveToUserDefaults(value: String) {
+        savedTimeUserDefaults = value
+    }
+    
+    func saveToKeychain(value: String) {
+        savedTimeKeychain = value
     }
 
     func resetToDefault() {
-        savedTime = ""
+        savedTimeUserDefaults = ""
+        savedTimeKeychain = ""
     }
 }

@@ -26,7 +26,7 @@ final class KeychainTests: XCTestCase {
     }
 
     override class func tearDown() {
-        KeychainWrapper.standard.removeObject(forKey: C.keychainObjectKey)
+        try? Keychain.default.remove(C.keychainObjectKey)
     }
 
 }
