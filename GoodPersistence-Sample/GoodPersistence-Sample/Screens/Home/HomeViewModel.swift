@@ -25,8 +25,11 @@ final class HomeViewModel {
     private let sourceSubject = PassthroughSubject<Date, Never>()
     private(set) lazy var sourcePublisher = sourceSubject.eraseToAnyPublisher()
 
-    private let savedValue = CurrentValueSubject<String, Never>("")
-    private(set) lazy var savedValuePublisher = savedValue.eraseToAnyPublisher()
+    private let savedUserDefaultsValue = CurrentValueSubject<String, Never>("")
+    private(set) lazy var savedUserDefaultsValuePublisher = savedUserDefaultsValue.eraseToAnyPublisher()
+    
+    private let savedKeychainValue = CurrentValueSubject<String, Never>("")
+    private(set) lazy var savedKeychainValuePublisher = savedKeychainValue.eraseToAnyPublisher()
 
     // MARK: - Initializer
 
@@ -35,8 +38,9 @@ final class HomeViewModel {
         self.di = di
 
         setupTimer()
-        sinkToCachedValue()
-        savedValue.send(di.cacheManager.savedTime)
+        sinkToValue()
+        savedUserDefaultsValue.send(di.cacheManager.savedTimeUserDefaults)
+        savedKeychainValue.send(di.cacheManager.savedTimeKeychain)
     }
 
 }
@@ -45,8 +49,12 @@ final class HomeViewModel {
 
 extension HomeViewModel {
 
-    func saveToCache(value: String) {
-        di.cacheManager.save(value: value)
+    func saveToUserDefaults(value: String) {
+        di.cacheManager.saveToUserDefaults(value: value)
+    }
+    
+    func saveToKeychain(value: String) {
+        di.cacheManager.saveToKeychain(value: value)
     }
 
     func resetCache() {
@@ -70,9 +78,19 @@ private extension HomeViewModel {
             .store(in: &cancellables)
     }
 
-    func sinkToCachedValue() {
-        di.cacheManager.savedTimePublisher
-            .sink { [weak self] value in self?.savedValue.send(value) }
+    func sinkToValue() {
+        di.cacheManager.savedTimeUserDefaultsPublisher
+            .sink { [weak self] value in self?.savedUserDefaultsValue.send(value) }
+            .store(in: &cancellables)
+        
+        di.cacheManager.savedTimeKeychainPublisher
+            .sink(receiveCompletion: { completion in
+                if case let .failure(keychainError) = completion {
+                    print(keychainError)
+                }
+            }, receiveValue: { [weak self] value in
+                self?.savedKeychainValue.send(value)
+            })
             .store(in: &cancellables)
     }
 

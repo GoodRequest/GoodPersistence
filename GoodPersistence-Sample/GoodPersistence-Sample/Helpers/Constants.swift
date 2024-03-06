@@ -37,10 +37,12 @@ struct Constants {
         struct Home {
 
             static let title = "Time"
-            static let save = "Save the time to cache"
+            static let saveToUserDefaults = "Save the time to UserDefaults"
+            static let saveToKeychain = "Save the time to KeyChain"
             static let reset = "Reset cache"
             static let aboutApp = "About app"
-            static let savedTime = "Saved time:\n"
+            static let userDefaultsTime = "UserDefaults saved time:\n"
+            static let keychainTime = "Keychain saved time:\n"
 
         }
 

@@ -1,13 +1,14 @@
-//
 //  UserDefaultsWrapper.swift
-//
 //
 //  Created by Dominik Pethö on 1/15/21.
 //
+//  https://github.com/jrendel/SwiftKeychainWrapper
+
 
 import Foundation
 import Combine
 import CombineExt
+import SwiftUI
 
 /// The UserDefaultValue wraps a value of any type that conforms to the Codable protocol, in order to store it in UserDefaults
 @available(iOS 13.0, *)
@@ -57,6 +58,15 @@ public class UserDefaultValue<T: Codable> {
             // Send the new value to subscribers of the subject.
             subject.send(newValue)
         }
+    }
+    
+    // This property is marked as a property wrapper, which means that it provides additional functionality around a stored value.
+    public var projectedValue: Binding<T> {
+        Binding(get: {
+            return self.wrappedValue
+        }, set: { newValue in
+            self.wrappedValue = newValue
+        })
     }
     
     /// The publisher property provides an AnyPublisher that sends the current value of wrappedValue, followed by any future changes.
