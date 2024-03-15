@@ -28,7 +28,8 @@ let package = Package(
                 .product(name: "CombineExt", package: "CombineExt"),
                 .product(name: "KeychainAccess", package: "KeychainAccess")
             ],
-            path: "./Sources/GoodPersistence"
+            path: "./Sources",
+            resources: [.copy("PrivacyInfo.xcprivacy")]
         ),
         .testTarget(
             name: "GoodPersistenceTests",
