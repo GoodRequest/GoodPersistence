@@ -40,23 +40,38 @@ public class UserDefaultValue<T: Codable> {
     public var wrappedValue: T {
         get {
             // If the data is of the correct type, return it.
-            if let data = UserDefaults.standard.value(forKey: key) as? T {
+            if let data = UserDefaults.standard.value(forKey: key) as? T {                
                 return data
             }
             
             // If the data isn't of the correct type, try to decode it from the Data stored in UserDefaults.
-            guard let data = UserDefaults.standard.object(forKey: key) as? Data else { return defaultValue }
-            let value = (try? PropertyListDecoder().decode(Wrapper.self, from: data))?.value ?? defaultValue
-            
-            return value
+            guard let data = UserDefaults.standard.object(forKey: key) as? Data else {
+                PersistenceLogger.log(message: "Default UserDefaults value [\(defaultValue)] for key [\(key)] used. Reason: Data not retrieved.")
+                return defaultValue
+            }
+
+            do {
+                let value = try PropertyListDecoder().decode(Wrapper.self, from: data).value
+                return value
+            } catch {
+                PersistenceLogger.log(error: error)
+                PersistenceLogger.log(message: "Default UserDefaults value [\(defaultValue)] for key [\(key)] used. Reason: Decoding error.")
+                return defaultValue
+            }
         }
         set(newValue) {
             // Wrap the new value in a Wrapper, and store the encoded Data in UserDefaults.
             let wrapper = Wrapper(value: newValue)
-            UserDefaults.standard.set(try? PropertyListEncoder().encode(wrapper), forKey: key)
-            
-            // Send the new value to subscribers of the subject.
-            subject.send(newValue)
+
+            do {
+                let value = try PropertyListEncoder().encode(wrapper)
+                UserDefaults.standard.set(value, forKey: key)
+                subject.send(newValue)
+                PersistenceLogger.log(message: "UserDefaults data for key [\(key)] has changed to \(newValue).")
+            } catch {
+                PersistenceLogger.log(error: error)
+                PersistenceLogger.log(message: "Setting UserDefaults value [\(defaultValue)] for key [\(key)] not performed. Reason: Encoding error.")
+            }
         }
     }
     
