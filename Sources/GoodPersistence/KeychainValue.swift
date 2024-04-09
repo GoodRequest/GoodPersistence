@@ -76,10 +76,10 @@ public enum Keychain {
 /// - `encodeError`: An error indicating a problem encoding data before storing it in the Keychain.
 public enum KeychainError: Error {
     
-    case accessError
-    case decodeError
-    case encodeError
-    
+    case accessError(Error)
+    case decodeError(Error)
+    case encodeError(Error)
+
 }
 
 /// A property wrapper class for simplifying the storage and retrieval of Codable values in the Keychain.
@@ -156,6 +156,7 @@ public class KeychainValue<T: Codable & Equatable> {
                 guard let data = try keychain.getData(key)
                 else {
                     // If no data is found in the Keychain, return the default value.
+                    PersistenceLogger.log(message: "Default keychain value [\(defaultValue)] for key [\(key)] used. Reason: Empty data.")
                     return defaultValue
                 }
                 do {
@@ -166,12 +167,16 @@ public class KeychainValue<T: Codable & Equatable> {
                     return value
                 } catch {
                     // Sending a failure completion event to the subject if decoding fails, and returning the default value.
-                    newSubject.send(completion: .failure(.decodeError))
+                    newSubject.send(completion: .failure(.decodeError(error)))
+                    PersistenceLogger.log(error: error)
+                    PersistenceLogger.log(message: "Default keychain value [\(defaultValue)] for key [\(key)] used. Reason: Decoding error.")
                     return defaultValue
                 }
             } catch {
                 // Sending a failure completion event to the subject if there's an issue accessing the Keychain, and returning the default value.
-                newSubject.send(completion: .failure(.accessError))
+                newSubject.send(completion: .failure(.accessError(error)))
+                PersistenceLogger.log(error: error)
+                PersistenceLogger.log(message: "Default keychain value [\(defaultValue)] for key [\(key)] used. Reason: Keychain access.")
                 return defaultValue
             }
         }
@@ -185,7 +190,9 @@ public class KeychainValue<T: Codable & Equatable> {
                     try keychain.remove(key)
                 } catch {
                     // Sending a failure completion event to the subject if there's an issue removing the entry from the Keychain.
-                    newSubject.send(completion: .failure(.accessError))
+                    newSubject.send(completion: .failure(.accessError(error)))
+                    PersistenceLogger.log(error: error)
+                    PersistenceLogger.log(message: "Setting keychain value [\(defaultValue)] for key [\(key)] not performed. Reason: Removing from keychain failed.")
                     return
                 }
             } else {
@@ -200,18 +207,23 @@ public class KeychainValue<T: Codable & Equatable> {
                         try keychain.set(data, key: key)
                     } catch {
                         // Sending a failure completion event to the subject if there's an issue storing the data in the Keychain.
-                        newSubject.send(completion: .failure(.accessError))
+                        newSubject.send(completion: .failure(.accessError(error)))
+                        PersistenceLogger.log(error: error)
+                        PersistenceLogger.log(message: "Setting keychain value [\(defaultValue)] for key [\(key)] not performed. Reason: Data encoding failed.")
                         return
                     }
                 } catch {
                     // Sending a failure completion event to the subject if there's an issue encoding the value.
-                    newSubject.send(completion: .failure(.encodeError))
+                    newSubject.send(completion: .failure(.encodeError(error)))
+                    PersistenceLogger.log(error: error)
+                    PersistenceLogger.log(message: "Setting keychain value [\(defaultValue)] for key [\(key)] not performed. Reason: Data encoding failed.")
                     return
                 }
             }
             // Sending the new value through the subject after successful Keychain operations.
             newSubject.send(newValue)
             subject.send(newValue)
+            PersistenceLogger.log(message: "Keychain Data for key [\(key)] has changed to \(newValue).")
         }
     }
     
