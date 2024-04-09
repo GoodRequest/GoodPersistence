@@ -1,11 +1,9 @@
 //
-//  File.swift
-//  
+//  PersistenceMonitor.swift
+//
 //
 //  Created by Dominik Pethö on 05/04/2024.
 //
-
-import Foundation
 
 /// Extend function to receive error or message from GoodPersistance library
 public protocol PersistenceMonitor {

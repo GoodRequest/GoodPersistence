@@ -1,11 +1,9 @@
 //
-//  File.swift
-//  
+//  Configuration.swift
+//
 //
 //  Created by Dominik Pethö on 05/04/2024.
 //
-
-import Foundation
 
 public final class GoodPersistence {
 

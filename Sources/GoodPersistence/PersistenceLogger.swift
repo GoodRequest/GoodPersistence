@@ -1,11 +1,9 @@
 //
-//  File.swift
+//  PersistenceLogger.swift
 //  
 //
 //  Created by Dominik Pethö on 05/04/2024.
 //
-
-import Foundation
 
 final class PersistenceLogger {
 
