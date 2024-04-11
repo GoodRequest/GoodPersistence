@@ -36,35 +36,67 @@ public class UserDefaultValue<T: Codable> {
         self.defaultValue = defaultValue
     }
     
+    private func retrieveValue(key: String) throws -> T {
+        // If the data is of the correct type, return it.
+        if let data = UserDefaults.standard.value(forKey: key) as? T {
+            return data
+        }
+        // If the data isn't of the correct type, try to decode it from the Data stored in UserDefaults.
+        guard let data = UserDefaults.standard.object(forKey: key) as? Data else {
+            PersistenceLogger.log(message: "Default UserDefaults value [\(defaultValue)] for key [\(key)] used. Reason: Data not retrieved.")
+            return defaultValue
+        }
+
+        do {
+            return try decodeJSON(data: data)
+        } catch {
+            do {
+                // ONLY SERVES AS BACKWARDS COMPATIBILITY ADAPTER FROM V1->V2
+                return try decodePlist(data: data)
+            } catch {
+                throw error
+            }
+        }
+    }
+
+    func decodeJSON(data: Data) throws -> T {
+        do {
+            // Decoding the retrieved data to get the value using Json Decoder.
+            return try JSONDecoder().decode(Wrapper.self, from: data).value
+        } catch {
+            PersistenceLogger.log(message: "Default UserDefaults value [\(defaultValue)] for key [\(key)] used. Reason: Decoding error using JSON Decoder.")
+            throw error
+        }
+    }
+
+    func decodePlist(data: Data) throws -> T {
+        do {
+            // Decoding fallback of retrieved data to get the value using Plist Decoder.
+            return try PropertyListDecoder().decode(Wrapper.self, from: data).value
+        } catch {
+            PersistenceLogger.log(message: "Default UserDefaults value [\(defaultValue)] for key [\(key)] used. Reason: Decoding error using PList Decoder.")
+            throw error
+        }
+    }
+
     // This property is marked as a property wrapper, which means that it provides additional functionality around a stored value.
     public var wrappedValue: T {
         get {
-            // If the data is of the correct type, return it.
-            if let data = UserDefaults.standard.value(forKey: key) as? T {                
-                return data
-            }
-            
-            // If the data isn't of the correct type, try to decode it from the Data stored in UserDefaults.
-            guard let data = UserDefaults.standard.object(forKey: key) as? Data else {
-                PersistenceLogger.log(message: "Default UserDefaults value [\(defaultValue)] for key [\(key)] used. Reason: Data not retrieved.")
-                return defaultValue
-            }
-
             do {
-                let value = try PropertyListDecoder().decode(Wrapper.self, from: data).value
-                return value
+                return try retrieveValue(key: key)
             } catch {
+                // Sending a failure completion event to the subject if decoding fails, and returning the default value.
                 PersistenceLogger.log(error: error)
-                PersistenceLogger.log(message: "Default UserDefaults value [\(defaultValue)] for key [\(key)] used. Reason: Decoding error.")
                 return defaultValue
             }
         }
+        
         set(newValue) {
             // Wrap the new value in a Wrapper, and store the encoded Data in UserDefaults.
             let wrapper = Wrapper(value: newValue)
 
             do {
-                let value = try PropertyListEncoder().encode(wrapper)
+                let value = try JSONEncoder().encode(wrapper)
                 UserDefaults.standard.set(value, forKey: key)
                 subject.send(newValue)
                 PersistenceLogger.log(message: "UserDefaults data for key [\(key)] has changed to \(newValue).")

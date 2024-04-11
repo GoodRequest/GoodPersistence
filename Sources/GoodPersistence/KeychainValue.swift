@@ -27,7 +27,21 @@ public struct KeychainConfiguration {
     let protocolType: ProtocolType?
     let accessGroup: String?
     let authenticationType: AuthenticationType?
-    
+
+    init(
+        service: String? = nil,
+        server: String? = nil,
+        protocolType: ProtocolType? = nil,
+        accessGroup: String? = nil,
+        authenticationType: AuthenticationType? = nil
+    ) {
+        self.service = service
+        self.server = server
+        self.protocolType = protocolType
+        self.accessGroup = accessGroup
+        self.authenticationType = authenticationType
+    }
+
 }
 
 /// A utility enum for managing Keychain operations and configuration.
@@ -112,6 +126,8 @@ public class KeychainValue<T: Codable & Equatable> {
         self.accessibility = accessibility
         self.synchronizable = synchronizable
         self.authenticationPolicy = authenticationPolicy
+
+        Keychain.configure(with: .init(service: Bundle.main.bundleIdentifier ?? "SwiftKeychainWrapper"))
     }
     
     // MARK: - Wrapper
@@ -139,7 +155,54 @@ public class KeychainValue<T: Codable & Equatable> {
     private let accessibility: KeychainAccess.Accessibility?
     private let synchronizable: Bool
     private let authenticationPolicy: KeychainAccess.AuthenticationPolicy?
-    
+
+    private func retrieveValue(key: String) throws -> T {
+        // Setting up the Keychain for retrieval.
+        let keychain = setupKeychain()
+        do {
+            // Attempting to retrieve data from the Keychain using the specified key.
+            guard let data = try keychain.getData(key)
+            else {
+                // If no data is found in the Keychain, return the default value.
+                PersistenceLogger.log(message: "Default keychain value [\(defaultValue)] for key [\(key)] used. Reason: Empty data.")
+                return defaultValue
+            }
+            do {
+                return try decodeJSON(data: data)
+            } catch {
+                do {
+                    // ONLY SERVES AS BACKWARDS COMPATIBILITY ADAPTER FROM V1->V2
+                    return try decodePlist(data: data)
+                } catch {
+                    throw error
+                }
+            }
+        } catch {
+            PersistenceLogger.log(message: "Default keychain value [\(defaultValue)] for key [\(key)] used. Reason: Keychain access.")
+            throw error
+        }
+    }
+
+    func decodeJSON(data: Data) throws -> T {
+        do {
+            // Decoding the retrieved data to get the value using Json Decoder.
+            return try JSONDecoder().decode(Wrapper.self, from: data).value
+        } catch {
+            PersistenceLogger.log(message: "Default keychain value [\(defaultValue)] for key [\(key)] used. Reason: Decoding error using JSON Decoder.")
+            throw error
+        }
+    }
+
+    func decodePlist(data: Data) throws -> T {
+        do {
+            // Decoding fallback of retrieved data to get the value using Plist Decoder.
+            return try PropertyListDecoder().decode(Wrapper.self, from: data).value
+        } catch {
+            PersistenceLogger.log(message: "Default keychain value [\(defaultValue)] for key [\(key)] used. Reason: Decoding error using PList Decoder.")
+            throw error
+        }
+    }
+
     /// Provides the wrapped value retrieved from the Keychain or the default value.
     ///
     /// Use this property to access the value stored in the Keychain. If the value does not exist in the Keychain,
@@ -150,33 +213,13 @@ public class KeychainValue<T: Codable & Equatable> {
     public var wrappedValue: T {
         get {
             // Setting up the Keychain for retrieval.
-            let keychain = setupKeychain()
             do {
-                // Attempting to retrieve data from the Keychain using the specified key.
-                guard let data = try keychain.getData(key)
-                else {
-                    // If no data is found in the Keychain, return the default value.
-                    PersistenceLogger.log(message: "Default keychain value [\(defaultValue)] for key [\(key)] used. Reason: Empty data.")
-                    return defaultValue
-                }
-                do {
-                    // Decoding the retrieved data to get the value.
-                    // If decoding fails, a failure completion event is sent to the subject, and the default value is returned.
-                    let value = try JSONDecoder().decode(Wrapper.self, from: data).value
-    
-                    return value
-                } catch {
-                    // Sending a failure completion event to the subject if decoding fails, and returning the default value.
-                    newSubject.send(completion: .failure(.decodeError(error)))
-                    PersistenceLogger.log(error: error)
-                    PersistenceLogger.log(message: "Default keychain value [\(defaultValue)] for key [\(key)] used. Reason: Decoding error.")
-                    return defaultValue
-                }
+                return try retrieveValue(key: key)
             } catch {
-                // Sending a failure completion event to the subject if there's an issue accessing the Keychain, and returning the default value.
-                newSubject.send(completion: .failure(.accessError(error)))
+                // Sending a failure completion event to the subject if decoding fails, and returning the default value.
+                newSubject.send(completion: .failure(.decodeError(error)))
                 PersistenceLogger.log(error: error)
-                PersistenceLogger.log(message: "Default keychain value [\(defaultValue)] for key [\(key)] used. Reason: Keychain access.")
+
                 return defaultValue
             }
         }

@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5D0F02AA2BC6A7860052980E /* KeychainWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0F02A72BC6A0750052980E /* KeychainWrapper.swift */; };
+		5D0F02AB2BC6A7860052980E /* KeychainValueV1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0F02A62BC6A0750052980E /* KeychainValueV1.swift */; };
+		5D0F02AC2BC6A7860052980E /* MajorMigrationTestsV1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0F02A82BC6A0750052980E /* MajorMigrationTestsV1.swift */; };
+		5D0F02AD2BC6A7860052980E /* KeychainItemAccessibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0F02A52BC6A0750052980E /* KeychainItemAccessibility.swift */; };
+		5D1DFC942BC8237E00E42D59 /* KeychainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D1DFC922BC8234100E42D59 /* KeychainTests.swift */; };
 		5D4A95AA299C15E000DFAEAE /* GoodPersistence in Frameworks */ = {isa = PBXBuildFile; productRef = 5D4A95A9299C15E000DFAEAE /* GoodPersistence */; };
 		EA751BB429968D87004016E1 /* MultiLineLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA751BB329968D87004016E1 /* MultiLineLabel.swift */; };
 		EA751BBD29969A9C004016E1 /* UINavigationBarExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA751BBC29969A9C004016E1 /* UINavigationBarExtensions.swift */; };
@@ -34,7 +39,23 @@
 		EACEC4AA2996383D008242AA /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACEC4A92996383D008242AA /* Constants.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		5D0F02A02BC6A06C0052980E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EACEC4522995B363008242AA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EACEC4592995B363008242AA;
+			remoteInfo = "GoodPersistence-Sample";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		5D0F029C2BC6A06C0052980E /* GoodPersistenceKeychainTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GoodPersistenceKeychainTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		5D0F02A52BC6A0750052980E /* KeychainItemAccessibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainItemAccessibility.swift; sourceTree = "<group>"; };
+		5D0F02A62BC6A0750052980E /* KeychainValueV1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainValueV1.swift; sourceTree = "<group>"; };
+		5D0F02A72BC6A0750052980E /* KeychainWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainWrapper.swift; sourceTree = "<group>"; };
+		5D0F02A82BC6A0750052980E /* MajorMigrationTestsV1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MajorMigrationTestsV1.swift; sourceTree = "<group>"; };
+		5D1DFC922BC8234100E42D59 /* KeychainTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainTests.swift; sourceTree = "<group>"; };
 		5D4A95A8299C15C900DFAEAE /* GoodPersistence */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = GoodPersistence; path = ..; sourceTree = "<group>"; };
 		EA751BB329968D87004016E1 /* MultiLineLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiLineLabel.swift; sourceTree = "<group>"; };
 		EA751BBC29969A9C004016E1 /* UINavigationBarExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UINavigationBarExtensions.swift; sourceTree = "<group>"; };
@@ -65,6 +86,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		5D0F02992BC6A06C0052980E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		EACEC4572995B363008242AA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -76,6 +104,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5D0F029D2BC6A06C0052980E /* GoodPersistenceKeychainTests */ = {
+			isa = PBXGroup;
+			children = (
+				5D1DFC922BC8234100E42D59 /* KeychainTests.swift */,
+				5D0F02A92BC6A0750052980E /* MajorMigrationTestsV1 */,
+			);
+			path = GoodPersistenceKeychainTests;
+			sourceTree = "<group>";
+		};
+		5D0F02A92BC6A0750052980E /* MajorMigrationTestsV1 */ = {
+			isa = PBXGroup;
+			children = (
+				5D0F02A52BC6A0750052980E /* KeychainItemAccessibility.swift */,
+				5D0F02A62BC6A0750052980E /* KeychainValueV1.swift */,
+				5D0F02A72BC6A0750052980E /* KeychainWrapper.swift */,
+				5D0F02A82BC6A0750052980E /* MajorMigrationTestsV1.swift */,
+			);
+			path = MajorMigrationTestsV1;
+			sourceTree = "<group>";
+		};
 		EA751BB529968DAC004016E1 /* UILabel */ = {
 			isa = PBXGroup;
 			children = (
@@ -90,6 +138,7 @@
 				5D4A95A8299C15C900DFAEAE /* GoodPersistence */,
 				EACEC45C2995B363008242AA /* GoodPersistence-Sample */,
 				EACEC4A52995CCB3008242AA /* Resources */,
+				5D0F029D2BC6A06C0052980E /* GoodPersistenceKeychainTests */,
 				EACEC45B2995B363008242AA /* Products */,
 				EACEC4742995B3BC008242AA /* Frameworks */,
 			);
@@ -99,6 +148,7 @@
 			isa = PBXGroup;
 			children = (
 				EACEC45A2995B363008242AA /* GoodPersistence-Sample.app */,
+				5D0F029C2BC6A06C0052980E /* GoodPersistenceKeychainTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -256,6 +306,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		5D0F029B2BC6A06C0052980E /* GoodPersistenceKeychainTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5D0F02A42BC6A06C0052980E /* Build configuration list for PBXNativeTarget "GoodPersistenceKeychainTests" */;
+			buildPhases = (
+				5D0F02982BC6A06C0052980E /* Sources */,
+				5D0F02992BC6A06C0052980E /* Frameworks */,
+				5D0F029A2BC6A06C0052980E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				5D0F02A12BC6A06C0052980E /* PBXTargetDependency */,
+			);
+			name = GoodPersistenceKeychainTests;
+			productName = GoodPersistenceKeychainTests;
+			productReference = 5D0F029C2BC6A06C0052980E /* GoodPersistenceKeychainTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		EACEC4592995B363008242AA /* GoodPersistence-Sample */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = EACEC4702995B365008242AA /* Build configuration list for PBXNativeTarget "GoodPersistence-Sample" */;
@@ -283,9 +351,13 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1410;
+				LastSwiftUpdateCheck = 1530;
 				LastUpgradeCheck = 1520;
 				TargetAttributes = {
+					5D0F029B2BC6A06C0052980E = {
+						CreatedOnToolsVersion = 15.3;
+						TestTargetID = EACEC4592995B363008242AA;
+					};
 					EACEC4592995B363008242AA = {
 						CreatedOnToolsVersion = 14.1;
 					};
@@ -305,11 +377,19 @@
 			projectRoot = "";
 			targets = (
 				EACEC4592995B363008242AA /* GoodPersistence-Sample */,
+				5D0F029B2BC6A06C0052980E /* GoodPersistenceKeychainTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		5D0F029A2BC6A06C0052980E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		EACEC4582995B363008242AA /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -323,6 +403,18 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		5D0F02982BC6A06C0052980E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5D0F02AA2BC6A7860052980E /* KeychainWrapper.swift in Sources */,
+				5D0F02AB2BC6A7860052980E /* KeychainValueV1.swift in Sources */,
+				5D0F02AC2BC6A7860052980E /* MajorMigrationTestsV1.swift in Sources */,
+				5D0F02AD2BC6A7860052980E /* KeychainItemAccessibility.swift in Sources */,
+				5D1DFC942BC8237E00E42D59 /* KeychainTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		EACEC4562995B363008242AA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -353,6 +445,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		5D0F02A12BC6A06C0052980E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EACEC4592995B363008242AA /* GoodPersistence-Sample */;
+			targetProxy = 5D0F02A02BC6A06C0052980E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
 		EACEC46A2995B365008242AA /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
@@ -365,6 +465,51 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		5D0F02A22BC6A06C0052980E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = FFZN8CA2AB;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.homescan.dev.GoodPersistenceKeychainTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GoodPersistence-Sample.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/GoodPersistence-Sample";
+			};
+			name = Debug;
+		};
+		5D0F02A32BC6A06C0052980E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = FFZN8CA2AB;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.homescan.dev.GoodPersistenceKeychainTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GoodPersistence-Sample.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/GoodPersistence-Sample";
+			};
+			name = Release;
+		};
 		EACEC46E2995B365008242AA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -416,7 +561,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -471,7 +616,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -486,6 +631,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "GoodPersistence-Sample/GoodPersistence-Sample.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = FFZN8CA2AB;
@@ -515,6 +661,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "GoodPersistence-Sample/GoodPersistence-Sample.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = FFZN8CA2AB;
@@ -542,6 +689,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		5D0F02A42BC6A06C0052980E /* Build configuration list for PBXNativeTarget "GoodPersistenceKeychainTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5D0F02A22BC6A06C0052980E /* Debug */,
+				5D0F02A32BC6A06C0052980E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		EACEC4552995B363008242AA /* Build configuration list for PBXProject "GoodPersistence-Sample" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
