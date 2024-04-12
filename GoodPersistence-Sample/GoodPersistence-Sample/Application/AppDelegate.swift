@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import GoodPersistence
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -20,6 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         UINavigationBar.configureAppearance()
 
+        GoodPersistence.Configuration.configure(monitors: [LoggingPersistenceMonitor(logger: OSLogLogger())])
         AppCoordinator(window: window, di: DI()).start()
         
         return true

@@ -1,3 +1,4 @@
+//
 //  KeychainValue.swift
 //
 //  Created by Sebastián Mráz on 3/1/24.
@@ -88,8 +89,26 @@ public enum Keychain {
 /// - `accessError`: An error indicating an issue with accessing or retrieving data from the Keychain.
 /// - `decodeError`: An error indicating a problem decoding data retrieved from the Keychain.
 /// - `encodeError`: An error indicating a problem encoding data before storing it in the Keychain.
-public enum KeychainError: Error {
-    
+public enum KeychainError: Error, Equatable, Hashable {
+
+    public static func == (lhs: KeychainError, rhs: KeychainError) -> Bool {
+        lhs.hashValue == rhs.hashValue
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        switch self {
+        case .accessError(let error):
+            hasher.combine(self.localizedDescription)
+            hasher.combine(error.localizedDescription)
+        case .decodeError(let error):
+            hasher.combine(self.localizedDescription)
+            hasher.combine(error.localizedDescription)
+        case .encodeError(let error):
+            hasher.combine(self.localizedDescription)
+            hasher.combine(error.localizedDescription)
+        }
+    }
+
     case accessError(Error)
     case decodeError(Error)
     case encodeError(Error)
@@ -103,7 +122,7 @@ public enum KeychainError: Error {
 @available(iOS 13.0, *)
 @propertyWrapper
 public class KeychainValue<T: Codable & Equatable> {
-    
+
     // MARK: - Initialization
     
     /// Initializes a `KeychainValue` instance with a given key, default value, accessibility, and optional synchronization and authentication policy.
@@ -147,16 +166,15 @@ public class KeychainValue<T: Codable & Equatable> {
     
     // MARK: - Properties
 
-    private let subject: PassthroughSubject<T, Never> = PassthroughSubject()
-    private let newSubject: PassthroughSubject<T, KeychainError> = PassthroughSubject()
-    
+    private let valueSubject: PassthroughSubject<T, Never> = PassthroughSubject()
+
     private let key: String
     private let defaultValue: T
     private let accessibility: KeychainAccess.Accessibility?
     private let synchronizable: Bool
     private let authenticationPolicy: KeychainAccess.AuthenticationPolicy?
 
-    private func retrieveValue(key: String) throws -> T {
+    public func retrieveValue(key: String) throws -> T {
         // Setting up the Keychain for retrieval.
         let keychain = setupKeychain()
         do {
@@ -164,7 +182,7 @@ public class KeychainValue<T: Codable & Equatable> {
             guard let data = try keychain.getData(key)
             else {
                 // If no data is found in the Keychain, return the default value.
-                PersistenceLogger.log(message: "Default keychain value [\(defaultValue)] for key [\(key)] used. Reason: Empty data.")
+                GoodPersistence.log(message: "Default keychain value [\(defaultValue)] for key [\(key)] used. Reason: Empty data.")
                 return defaultValue
             }
             do {
@@ -178,7 +196,7 @@ public class KeychainValue<T: Codable & Equatable> {
                 }
             }
         } catch {
-            PersistenceLogger.log(message: "Default keychain value [\(defaultValue)] for key [\(key)] used. Reason: Keychain access.")
+            GoodPersistence.log(message: "Default keychain value [\(defaultValue)] for key [\(key)] used. Reason: Keychain access.")
             throw error
         }
     }
@@ -188,7 +206,7 @@ public class KeychainValue<T: Codable & Equatable> {
             // Decoding the retrieved data to get the value using Json Decoder.
             return try JSONDecoder().decode(Wrapper.self, from: data).value
         } catch {
-            PersistenceLogger.log(message: "Default keychain value [\(defaultValue)] for key [\(key)] used. Reason: Decoding error using JSON Decoder.")
+            GoodPersistence.log(message: "Default keychain value [\(defaultValue)] for key [\(key)] used. Reason: Decoding error using JSON Decoder.")
             throw error
         }
     }
@@ -198,8 +216,41 @@ public class KeychainValue<T: Codable & Equatable> {
             // Decoding fallback of retrieved data to get the value using Plist Decoder.
             return try PropertyListDecoder().decode(Wrapper.self, from: data).value
         } catch {
-            PersistenceLogger.log(message: "Default keychain value [\(defaultValue)] for key [\(key)] used. Reason: Decoding error using PList Decoder.")
+            GoodPersistence.log(message: "Default keychain value [\(defaultValue)] for key [\(key)] used. Reason: Decoding error using PList Decoder.")
             throw error
+        }
+    }
+
+    private func saveValue(key: String, newValue: T) throws {
+        // Setting up the Keychain for storage.
+        let keychain = setupKeychain()
+        if newValue == defaultValue {
+            // If the new value is equal to the default value, remove the corresponding entry from the Keychain.
+            do {
+                try keychain.remove(key)
+            } catch {
+                GoodPersistence.log(message: "Setting keychain value [\(defaultValue)] for key [\(key)] not performed. Reason: Removing from keychain failed.")
+                throw error
+            }
+        } else {
+            // If the new value is different from the default value, wrap it in a Wrapper structure for encoding.
+            let wrapper = Wrapper(value: newValue)
+
+            do {
+                // Encoding the wrapped value.
+                let data = try JSONEncoder().encode(wrapper)
+                do {
+                    // Storing data in the Keychain using the specified key
+                    try keychain.set(data, key: key)
+                } catch {
+                    GoodPersistence.log(message: "Setting keychain value [\(defaultValue)] for key [\(key)] not performed. Reason: Data encoding failed.")
+                    throw error
+                }
+            } catch {
+                GoodPersistence.log(message: "Setting keychain value [\(defaultValue)] for key [\(key)] not performed. Reason: Data encoding failed.")
+                throw error
+            }
+            GoodPersistence.log(message: "Keychain Data for key [\(key)] has changed to \(newValue).")
         }
     }
 
@@ -212,61 +263,21 @@ public class KeychainValue<T: Codable & Equatable> {
     /// made to this property will be reflected in the Keychain as well.
     public var wrappedValue: T {
         get {
-            // Setting up the Keychain for retrieval.
             do {
                 return try retrieveValue(key: key)
             } catch {
-                // Sending a failure completion event to the subject if decoding fails, and returning the default value.
-                newSubject.send(completion: .failure(.decodeError(error)))
-                PersistenceLogger.log(error: error)
+                GoodPersistence.log(error: error)
 
                 return defaultValue
             }
         }
 
         set(newValue) {
-            // Setting up the Keychain for storage.
-            let keychain = setupKeychain()
-            if newValue == defaultValue {
-                // If the new value is equal to the default value, remove the corresponding entry from the Keychain.
-                do {
-                    try keychain.remove(key)
-                } catch {
-                    // Sending a failure completion event to the subject if there's an issue removing the entry from the Keychain.
-                    newSubject.send(completion: .failure(.accessError(error)))
-                    PersistenceLogger.log(error: error)
-                    PersistenceLogger.log(message: "Setting keychain value [\(defaultValue)] for key [\(key)] not performed. Reason: Removing from keychain failed.")
-                    return
-                }
-            } else {
-                // If the new value is different from the default value, wrap it in a Wrapper structure for encoding.
-                let wrapper = Wrapper(value: newValue)
-                
-                do {
-                    // Encoding the wrapped value.
-                    let data = try JSONEncoder().encode(wrapper)
-                    do {
-                        // Storing data in the Keychain using the specified key
-                        try keychain.set(data, key: key)
-                    } catch {
-                        // Sending a failure completion event to the subject if there's an issue storing the data in the Keychain.
-                        newSubject.send(completion: .failure(.accessError(error)))
-                        PersistenceLogger.log(error: error)
-                        PersistenceLogger.log(message: "Setting keychain value [\(defaultValue)] for key [\(key)] not performed. Reason: Data encoding failed.")
-                        return
-                    }
-                } catch {
-                    // Sending a failure completion event to the subject if there's an issue encoding the value.
-                    newSubject.send(completion: .failure(.encodeError(error)))
-                    PersistenceLogger.log(error: error)
-                    PersistenceLogger.log(message: "Setting keychain value [\(defaultValue)] for key [\(key)] not performed. Reason: Data encoding failed.")
-                    return
-                }
+            do {
+                try saveValue(key: key, newValue: newValue)
+            } catch {
+                GoodPersistence.log(error: error)
             }
-            // Sending the new value through the subject after successful Keychain operations.
-            newSubject.send(newValue)
-            subject.send(newValue)
-            PersistenceLogger.log(message: "Keychain Data for key [\(key)] has changed to \(newValue).")
         }
     }
     
@@ -282,29 +293,6 @@ public class KeychainValue<T: Codable & Equatable> {
         })
     }
 
-    /// **Deprecated:** Use `valuePublisher` property instead.
-    ///
-    /// The `publisher` property provides an `AnyPublisher` that sends the current value of `wrappedValue`,
-    /// followed by any future changes. It is deprecated in favor of the more descriptive `valuePublisher`
-    /// property, which includes error handling for Keychain-related errors.
-    ///
-    /// - Note: This property will be removed in future releases. Please update your code to use `valuePublisher`.
-    @available(*, deprecated, message: "Please use valuePublisher: AnyPublisher<T, KeychainError> instead")
-    public lazy var publisher: AnyPublisher<T, Never> = {
-        if let authenticationPolicy {
-            Deferred {
-                self.subject
-                    .share(replay: 1)
-            }.eraseToAnyPublisher()
-        } else {
-            Deferred {
-                self.subject
-                    .prepend(self.wrappedValue)
-                    .share(replay: 1)
-            }.eraseToAnyPublisher()
-        }
-    }()
-    
     /// The `valuePublisher` property provides an `AnyPublisher` that sends the current value of `wrappedValue`,
     /// followed by any future changes, with error handling for Keychain-related errors.
     ///
@@ -312,21 +300,22 @@ public class KeychainValue<T: Codable & Equatable> {
     /// through a publisher that includes error information when applicable.
     ///
     /// - Note: The publisher shares the current value on subscription, followed by subsequent changes.
-    public lazy var valuePublisher: AnyPublisher<T, KeychainError> = {
+    ///
+    public lazy var valuePublisher: AnyPublisher<T, Never> = {
         if let authenticationPolicy {
             Deferred {
-                self.newSubject
+                self.valueSubject
                     .share(replay: 1)
             }.eraseToAnyPublisher()
         } else {
             Deferred {
-                self.newSubject
+                self.valueSubject
                     .prepend(self.wrappedValue)
                     .share(replay: 1)
             }.eraseToAnyPublisher()
         }
     }()
-    
+
     /// Sets up and returns a `KeychainAccess.Keychain` instance based on the provided configurations.
     ///
     /// This method constructs a `KeychainAccess.Keychain` instance with optional accessibility and authentication policy,

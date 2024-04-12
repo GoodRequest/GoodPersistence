@@ -1,9 +1,9 @@
+//
 //  UserDefaultsWrapper.swift
 //
 //  Created by Dominik Pethö on 1/15/21.
 //
 //  https://github.com/jrendel/SwiftKeychainWrapper
-
 
 import Foundation
 import Combine
@@ -35,7 +35,8 @@ public class UserDefaultValue<T: Codable> {
         self.key = key
         self.defaultValue = defaultValue
     }
-    
+
+    // Retrieves Value or Throws Error
     private func retrieveValue(key: String) throws -> T {
         // If the data is of the correct type, return it.
         if let data = UserDefaults.standard.value(forKey: key) as? T {
@@ -43,7 +44,7 @@ public class UserDefaultValue<T: Codable> {
         }
         // If the data isn't of the correct type, try to decode it from the Data stored in UserDefaults.
         guard let data = UserDefaults.standard.object(forKey: key) as? Data else {
-            PersistenceLogger.log(message: "Default UserDefaults value [\(defaultValue)] for key [\(key)] used. Reason: Data not retrieved.")
+            GoodPersistence.log(message: "GoodPersistence: UserDefaults value [\(defaultValue)] for key [\(key)] used. Reason: Data not retrieved.")
             return defaultValue
         }
 
@@ -64,7 +65,7 @@ public class UserDefaultValue<T: Codable> {
             // Decoding the retrieved data to get the value using Json Decoder.
             return try JSONDecoder().decode(Wrapper.self, from: data).value
         } catch {
-            PersistenceLogger.log(message: "Default UserDefaults value [\(defaultValue)] for key [\(key)] used. Reason: Decoding error using JSON Decoder.")
+            GoodPersistence.log(message: "GoodPersistence: UserDefaults value [\(defaultValue)] for key [\(key)] used. Reason: Decoding error using JSON Decoder.")
             throw error
         }
     }
@@ -74,7 +75,7 @@ public class UserDefaultValue<T: Codable> {
             // Decoding fallback of retrieved data to get the value using Plist Decoder.
             return try PropertyListDecoder().decode(Wrapper.self, from: data).value
         } catch {
-            PersistenceLogger.log(message: "Default UserDefaults value [\(defaultValue)] for key [\(key)] used. Reason: Decoding error using PList Decoder.")
+            GoodPersistence.log(message: "GoodPersistence: UserDefaults value [\(defaultValue)] for key [\(key)] used. Reason: Decoding error using PList Decoder.")
             throw error
         }
     }
@@ -86,7 +87,7 @@ public class UserDefaultValue<T: Codable> {
                 return try retrieveValue(key: key)
             } catch {
                 // Sending a failure completion event to the subject if decoding fails, and returning the default value.
-                PersistenceLogger.log(error: error)
+                GoodPersistence.log(error: error)
                 return defaultValue
             }
         }
@@ -99,10 +100,10 @@ public class UserDefaultValue<T: Codable> {
                 let value = try JSONEncoder().encode(wrapper)
                 UserDefaults.standard.set(value, forKey: key)
                 subject.send(newValue)
-                PersistenceLogger.log(message: "UserDefaults data for key [\(key)] has changed to \(newValue).")
+                GoodPersistence.log(message: "GoodPersistence: data for key [\(key)] has changed to \(newValue).")
             } catch {
-                PersistenceLogger.log(error: error)
-                PersistenceLogger.log(message: "Setting UserDefaults value [\(defaultValue)] for key [\(key)] not performed. Reason: Encoding error.")
+                GoodPersistence.log(error: error)
+                GoodPersistence.log(message: "GoodPersistence: saving UserDefaults value [\(defaultValue)] for key [\(key)] not performed. Reason: Encoding error.")
             }
         }
     }

@@ -1,8 +1,8 @@
 //
 //  MajorMigrationTestsV1.swift
+//  
 //
-//
-//  Created by Andrej Jasso on 10/04/2024.
+//  Created by Andrej Jasso on 12/04/2024.
 //
 
 import XCTest
@@ -18,11 +18,11 @@ final class KeychainMajorMigrationV1Tests: XCTestCase {
         static let testValue = "Hello there general Kenobi"
 
     }
-    
-    @KeychainValueV1(C.keychainObjectKey, defaultValue: C.testValue)
+
+    @UserDefaultValueV1(C.keychainObjectKey, defaultValue: C.testValue)
     var testString: String?
 
-    @KeychainValue(C.keychainObjectKey, defaultValue: C.testValue)
+    @UserDefaultValue(C.keychainObjectKey, defaultValue: C.testValue)
     var testString2: String?
 
     func testMigrationFromv1tov2() {
@@ -38,7 +38,6 @@ final class KeychainMajorMigrationV1Tests: XCTestCase {
     }
 
     override class func tearDown() {
-        try? Keychain.default.remove(C.keychainObjectKey)
     }
 
 }
