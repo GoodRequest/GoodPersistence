@@ -16,7 +16,7 @@ protocol CacheManagerType: AnyObject {
     
     var savedTimeKeychain: String { get }
 
-    var savedTimeKeychainPublisher: AnyPublisher<String, KeychainError> { get }
+    var savedTimeKeychainPublisher: AnyPublisher<String, Never> { get }
 
     var savedNumberKeychain: Int { get set }
     

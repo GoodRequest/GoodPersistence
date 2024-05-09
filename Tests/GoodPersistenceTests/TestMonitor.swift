@@ -1,24 +1,24 @@
 //
-//  File.swift
-//  
+//  TestMonitor.swift
 //
 //  Created by Dominik Pethö on 05/04/2024.
 //
+
 import GoodPersistence
 
 final class TestMonitor: PersistenceMonitor {
 
-    var error: Error?
-    var message: String?
+    var errors: [Error] = []
+    var messages: [String] = []
 
     func didReceive(_ monitor: PersistenceMonitor, error: Error) {
         debugPrint(error)
-        self.error = error
+        self.errors.append(error)
     }
 
     func didReceive(_ monitor: PersistenceMonitor, message: String) {
         debugPrint(message)
-        self.message = message
+        self.messages.append(message)
     }
 
 }

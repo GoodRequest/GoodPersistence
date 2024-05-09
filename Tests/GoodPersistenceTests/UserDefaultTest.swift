@@ -39,10 +39,11 @@ final class UserDefaultsTests: XCTestCase {
         var test: EmptyTest
 
         let _ = test
+        let firstMessage = monitor.messages.first
 
         XCTAssert(
-            monitor.message == "Default UserDefaults value [EmptyTest(value: \"\")] for key [Test Monitor] used. Reason: Data not retrieved.",
-            "Monitor should contain message for using default value. Contains: \(monitor.message)."
+            firstMessage == "GoodPersistence: UserDefaults value [EmptyTest(value: \"\")] for key [Test Monitor] used. Reason: Data not retrieved.",
+            "Monitor should contain message for using default value. Contains: \(String(describing: firstMessage))."
         )
     }
 
@@ -58,10 +59,11 @@ final class UserDefaultsTests: XCTestCase {
         var test: EmptyTest
 
         test = .init(value: "newValue")
+        let firstMessage = monitor.messages.first
 
         XCTAssert(
-            monitor.message == "UserDefaults data for key [Test Monitor] has changed to EmptyTest(value: \"newValue\").",
-            "Monitor should contain message for using default value. Contains: \(monitor.message)."
+            firstMessage == "GoodPersistence: data for key [Test Monitor] has changed to EmptyTest(value: \"newValue\").",
+            "Monitor should contain message for using default value. Contains: \(String(describing: firstMessage))."
         )
     }
 
@@ -85,15 +87,24 @@ final class UserDefaultsTests: XCTestCase {
         @UserDefaultValue(C.userDefaultsObjectTestMonitorKey, defaultValue: .init(value: "", secondValue: ""))
         var testFailure: EmptyTestFailure
         let _ = testFailure
+        let firstErrors = monitor.errors.first
+
+        let testMessage1 = "GoodPersistence: UserDefaults value [EmptyTestFailure(value: \"\", secondValue: \"\")] for key [Test Monitor] used. Reason: Decoding error using JSON Decoder."
+        let testMessage2 = "GoodPersistence: UserDefaults value [EmptyTestFailure(value: \"\", secondValue: \"\")] for key [Test Monitor] used. Reason: Decoding error using PList Decoder."
 
         XCTAssert(
-            monitor.message == "Default UserDefaults value [EmptyTestFailure(value: \"\", secondValue: \"\")] for key [Test Monitor] used. Reason: Decoding error.",
-            "Monitor should contain message for using default value. Contains: \(monitor.message)."
+            monitor.messages.contains { $0 == testMessage1},
+            "Monitor should contain message for using default value. Contains: \(monitor.messages))."
         )
 
         XCTAssert(
-            monitor.error != nil,
-            "Monitor should contain error for using default value. Contains error: \(monitor.error)."
+            monitor.messages.contains { $0 == testMessage2},
+            "Monitor should contain message for using default value. Contains: \(monitor.messages))."
+        )
+
+        XCTAssert(
+            firstErrors != nil,
+            "Monitor should contain error for using default value. Contains error: \(String(describing: firstErrors))."
         )
     }
 
@@ -117,10 +128,11 @@ final class UserDefaultsTests: XCTestCase {
         @UserDefaultValue(C.userDefaultsObjectTestMonitorKey, defaultValue: .init(value: "", secondValue: ""))
         var testFailure: EmptyTestFailure
         let _ = testFailure
+        let firstErrors = monitor.errors.first
 
         XCTAssert(
-            monitor.error != nil,
-            "Monitor should contain error for using default value. Contains error: \(monitor.error)."
+            firstErrors != nil,
+            "Monitor should contain error for using default value. Contains error: \(String(describing: firstErrors))."
         )
     }
 

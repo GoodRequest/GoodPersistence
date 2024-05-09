@@ -1,7 +1,6 @@
 //
 //  PersistenceMonitor.swift
 //
-//
 //  Created by Dominik Pethö on 05/04/2024.
 //
 
