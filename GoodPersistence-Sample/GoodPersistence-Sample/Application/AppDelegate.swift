@@ -7,6 +7,7 @@
 
 import UIKit
 import GoodPersistence
+import GoodLogger
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
