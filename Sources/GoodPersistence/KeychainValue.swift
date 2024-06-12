@@ -228,6 +228,7 @@ public class KeychainValue<T: Codable & Equatable> {
             // If the new value is equal to the default value, remove the corresponding entry from the Keychain.
             do {
                 try keychain.remove(key)
+                valueSubject.send(newValue)
             } catch {
                 GoodPersistence.log(message: "Setting keychain value [\(defaultValue)] for key [\(key)] not performed. Reason: Removing from keychain failed.")
                 throw error
@@ -239,15 +240,11 @@ public class KeychainValue<T: Codable & Equatable> {
             do {
                 // Encoding the wrapped value.
                 let data = try JSONEncoder().encode(wrapper)
-                do {
-                    // Storing data in the Keychain using the specified key
-                    try keychain.set(data, key: key)
-                } catch {
-                    GoodPersistence.log(message: "Setting keychain value [\(defaultValue)] for key [\(key)] not performed. Reason: Data encoding failed.")
-                    throw error
-                }
+                // Storing data in the Keychain using the specified key
+                try keychain.set(data, key: key)
+                valueSubject.send(newValue)
             } catch {
-                GoodPersistence.log(message: "Setting keychain value [\(defaultValue)] for key [\(key)] not performed. Reason: Data encoding failed.")
+                GoodPersistence.log(message: "Setting keychain value [\(newValue)] for key [\(key)] not performed. Reason: Data encoding failed.")
                 throw error
             }
             GoodPersistence.log(message: "Keychain Data for key [\(key)] has changed to \(newValue).")
