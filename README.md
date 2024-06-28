@@ -38,7 +38,7 @@ let package = Package(
 
 ## Usage
 
-Storing to the UserDeaults
+Storing to the UserDefaults
 ```swift
 @UserDefaultValue(String(describing: AppState.self), defaultValue: .initial)
 var appState: AppState
