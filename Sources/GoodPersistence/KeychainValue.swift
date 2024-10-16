@@ -136,7 +136,7 @@ public class KeychainValue<T: Codable & Equatable> {
     public init(
         _ key: String,
         defaultValue: T,
-        accessibility: KeychainAccess.Accessibility? = nil,
+        accessibility: KeychainAccess.Accessibility = .afterFirstUnlock,
         synchronizable: Bool = false,
         authenticationPolicy: KeychainAccess.AuthenticationPolicy? = nil
     ) {
@@ -170,7 +170,7 @@ public class KeychainValue<T: Codable & Equatable> {
 
     private let key: String
     private let defaultValue: T
-    private let accessibility: KeychainAccess.Accessibility?
+    private let accessibility: KeychainAccess.Accessibility
     private let synchronizable: Bool
     private let authenticationPolicy: KeychainAccess.AuthenticationPolicy?
 
@@ -321,19 +321,14 @@ public class KeychainValue<T: Codable & Equatable> {
     ///
     /// - Returns: A configured `KeychainAccess.Keychain` instance based on the provided parameters.
     private func setupKeychain() -> KeychainAccess.Keychain {
-        if let accessibility, let authenticationPolicy {
-            return Keychain.default
-                .accessibility(accessibility, authenticationPolicy: authenticationPolicy)
-        } else if let accessibility {
+        if let authenticationPolicy {
             return Keychain.default
                 .synchronizable(synchronizable)
-                .accessibility(accessibility)
-        } else if let authenticationPolicy {
-            return Keychain.default
-                .accessibility(Keychain.default.accessibility, authenticationPolicy: authenticationPolicy)
+                .accessibility(accessibility, authenticationPolicy: authenticationPolicy)
         } else {
             return Keychain.default
                 .synchronizable(synchronizable)
+                .accessibility(accessibility)
         }
     }
 
