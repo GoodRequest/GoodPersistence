@@ -328,6 +328,9 @@ public class KeychainValue<T: Codable & Equatable> {
             return Keychain.default
                 .synchronizable(synchronizable)
                 .accessibility(accessibility)
+        } else if let authenticationPolicy {
+            return Keychain.default
+                .accessibility(Keychain.default.accessibility, authenticationPolicy: authenticationPolicy)
         } else {
             return Keychain.default
                 .synchronizable(synchronizable)
