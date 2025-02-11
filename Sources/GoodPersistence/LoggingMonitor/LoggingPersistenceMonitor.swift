@@ -16,11 +16,11 @@ public final class LoggingPersistenceMonitor: PersistenceMonitor {
     }
 
     public func didReceive(_ monitor: any PersistenceMonitor, error: any Error) {
-        logger?.log(level: .error, message: error.localizedDescription, privacy: .auto)
+        logger?.log(message: error.localizedDescription, level: .error, privacy: .auto)
     }
 
     public func didReceive(_ monitor: any PersistenceMonitor, message: String) {
-        logger?.log(level: .info, message: message, privacy: .auto)
+        logger?.log(message: message, level: .info, privacy: .auto)
     }
 
 }
