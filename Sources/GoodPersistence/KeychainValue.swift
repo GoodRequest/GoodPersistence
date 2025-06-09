@@ -179,7 +179,7 @@ public class KeychainValue<T: Codable & Equatable> {
         let keychain = setupKeychain()
         do {
             // Attempting to retrieve data from the Keychain using the specified key.
-            guard let data = try keychain.getData(key)
+            guard let data = try keychain.getData(key, ignoringAttributeSynchronizable: false)
             else {
                 // If no data is found in the Keychain, return the default value.
                 GoodPersistence.log(message: "Default keychain value [\(defaultValue)] for key [\(key)] used. Reason: Empty data.")
