@@ -58,5 +58,22 @@ lazy var appStatePublisher = _appState.publisher
     .eraseToAnyPublisher()
 ```
 
+## Logging
+```swift
+struct SamplePersistenceMonitor: PersistenceMonitor {
+    
+    func didReceive(_ monitor: any PersistenceMonitor, error: any Error) {
+        print("Error received: \(error.localizedDescription)")
+    }
+    
+    func didReceive(_ monitor: any PersistenceMonitor, message: String) {
+        print("Message received: \(message)")
+    }
+    
+}
+
+GoodPersistence.Configuration.configure(monitors: [SamplePersistenceMonitor()])
+```
+
 ## License
 GoodPersistence is released under the MIT license. See [LICENSE](LICENSE.md) for details.

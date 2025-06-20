@@ -18,7 +18,6 @@ let package = Package(
         // Dependencies declare other packages that this package depends on.
         .package(url: "https://github.com/CombineCommunity/CombineExt.git", from: "1.0.0"),
         .package(url: "https://github.com/kishikawakatsumi/KeychainAccess.git", from: "4.2.2"),
-        .package(url: "https://github.com/GoodRequest/GoodLogger.git", from: "1.0.0")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -27,8 +26,7 @@ let package = Package(
             name: "GoodPersistence",
             dependencies: [
                 .product(name: "CombineExt", package: "CombineExt"),
-                .product(name: "KeychainAccess", package: "KeychainAccess"),
-                .product(name: "GoodLogger", package: "GoodLogger")
+                .product(name: "KeychainAccess", package: "KeychainAccess")
             ],
             path: "./Sources",
             resources: [.copy("PrivacyInfo.xcprivacy")]

@@ -10,15 +10,6 @@
       }
     },
     {
-      "identity" : "goodlogger",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/GoodRequest/GoodLogger.git",
-      "state" : {
-        "revision" : "7e0a11ffa920889c8d289c1dca60d6b0c94b0ae9",
-        "version" : "1.0.0"
-      }
-    },
-    {
       "identity" : "keychainaccess",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/kishikawakatsumi/KeychainAccess.git",

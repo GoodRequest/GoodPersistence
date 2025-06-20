@@ -9,6 +9,18 @@ import UIKit
 import GoodPersistence
 import GoodLogger
 
+struct SamplePersistenceMonitor: PersistenceMonitor {
+    
+    func didReceive(_ monitor: any PersistenceMonitor, error: any Error) {
+        print("Error received: \(error.localizedDescription)")
+    }
+    
+    func didReceive(_ monitor: any PersistenceMonitor, message: String) {
+        print("Message received: \(message)")
+    }
+    
+}
+
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -22,7 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         UINavigationBar.configureAppearance()
 
-        GoodPersistence.Configuration.configure(monitors: [LoggingPersistenceMonitor(logger: OSLogLogger())])
+        GoodPersistence.Configuration.configure(monitors: [SamplePersistenceMonitor()])
         AppCoordinator(window: window, di: DI()).start()
         
         return true
