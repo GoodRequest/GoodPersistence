@@ -7,7 +7,6 @@
 
 import UIKit
 import GoodPersistence
-import GoodLogger
 
 struct SamplePersistenceMonitor: PersistenceMonitor {
     

@@ -14,7 +14,7 @@ enum DateFormat: String {
 
 final class DateFormatterHelper {
 
-    public static let shared = DateFormatterHelper()
+	@MainActor public static let shared = DateFormatterHelper()
     public let formatter: DateFormatter
 
     private init() {
